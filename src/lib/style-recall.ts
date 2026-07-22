@@ -16,7 +16,7 @@
 // endpoint is unavailable (no credits, local Ollama missing the embed model,
 // network error). The writer never sees the difference.
 
-import { loadStyleMemory, sampleStyleExamples, type StyleMemoryEntry } from "./style-memory";
+import { loadStyleMemory, sampleStyleExamples, DEFAULT_STYLE_SEEDS, type StyleMemoryEntry } from "./style-memory";
 import { embedMany, embedOne, cosineSim, resolveEmbedContext, type EmbedContext } from "./embeddings";
 
 export type RecalledExample = { bars: string[]; meta: string };
