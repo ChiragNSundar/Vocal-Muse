@@ -9,7 +9,7 @@
   <img src="https://img.shields.io/badge/License-MIT-green?style=for-the-badge" alt="License MIT" />
 </p>
 
-An open-source, local-first studio workspace for vocalists, songwriters, and producers. **Vocal Muse** turns mumble freestlyes into Drake/Kendrick-tier polished lyrics, maps audio cadences in real-time, and builds a personalized style memory—all running **100% offline** on your local machine with zero cloud lock-in.
+An open-source, local-first studio workspace for vocalists, songwriters, and producers. **Vocal Muse** turns mumble freestyles into Drake/Kendrick-tier polished lyrics, maps audio cadences in real-time, and builds a personalized style memory—all running **100% offline** on your local machine with zero cloud lock-in.
 
 ---
 
@@ -29,6 +29,36 @@ While cloud-based tools rely on remote APIs and subscription credits, **Vocal Mu
 - 💾 **Local-First Storage**: Audio takes save to **OPFS** (Origin Private File System); tracks and style memories save to **IndexedDB**. Includes 1-click JSON bundle import/export.
 - 🎵 **Rhymes & Language Intelligence**: Offline CMUdict phonetic dictionary, keyless Datamuse API, and deep-linking into [RhymeWave](https://www.rhymewave.com/) for phonetic exploration.
 - 🕸️ **Knowledge Graph Enabled**: Complete codebase AST indexed with [Graphify](https://github.com/sponsors/safishamsi) for interactive architectural exploration.
+
+---
+
+## 📸 Interface Showcase & Visual Tour
+
+Explore the core studios and modules of **Vocal Muse**:
+
+### 1. Track Library (`/library`)
+*The central dashboard for managing your tracks, lyrics, audio takes, and metadata.*
+![Track Library](docs/screenshots/track_library.png)
+
+### 2. New Track Studio (`/new`)
+*Create new songs from mumble transcripts, live mic recordings, or uploaded audio files.*
+![New Track Studio](docs/screenshots/new_track_studio.png)
+
+### 3. Live Punch-In Studio (`/live`)
+*Real-time vocal capture and bar-by-bar punch-in recording with visual syllable pocket indicators.*
+![Live Punch-In Studio](docs/screenshots/live_punch_in.png)
+
+### 4. Reference & Style Intelligence (`/references`)
+*1-click web lyric scraper to extract cadence blueprints (Cadence Fingerprints) and train your AI ghostwriter.*
+![Reference & Style Intelligence](docs/screenshots/reference_and_style.png)
+
+### 5. Connect Local AI (`/connect`)
+*Auto-scan localhost to wire up local LLM servers (LM Studio, Ollama) and Whisper STT servers.*
+![Connect Local AI](docs/screenshots/connect_local_ai.png)
+
+### 6. Settings Dashboard (`/settings`)
+*Monitor local storage quotas (IndexedDB / OPFS), clear caches, and run synthetic self-play training benchmarks.*
+![Settings Dashboard](docs/screenshots/settings_dashboard.png)
 
 ---
 
@@ -75,7 +105,7 @@ faster-whisper-server --model Systran/faster-whisper-base.en --port 9000
 
 ```
 Vocal Muse Architecture
-├── src/routes/             # TanStack Start file-based routing (_app/studio, _app/settings, etc.)
+├── src/routes/             # TanStack Start file-based routing (_app/live, _app/references, etc.)
 ├── src/lib/local-pipeline  # Multi-pass cadence matching & ghostwriter refinement pipeline
 ├── src/lib/local-store     # IndexedDB (tracks, bars) & OPFS (audio takes) local persistence
 ├── src/lib/style-memory    # Few-shot vector recall & anti-cliché phrase burner
@@ -104,11 +134,6 @@ We welcome contributions from developers, musicians, sound engineers, and AI ent
    - Create a feature branch (`git checkout -b feature/awesome-feature`).
    - Ensure all tests pass (`bun test` or `npm test`).
    - Open a PR with a clear description of your changes.
-
-### Conventions for Contributors:
-- Follow React 19 / TanStack Start patterns in `src/routes/`.
-- All browser-only APIs (`window`, `localStorage`, `OPFS`) must run inside `useEffect` or client guards.
-- Prefer `search-replace` edits over full-file rewrites.
 
 ---
 
