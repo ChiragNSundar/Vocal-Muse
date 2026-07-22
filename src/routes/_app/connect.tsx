@@ -231,7 +231,6 @@ function ConnectPage() {
                   <Select value={config.transcriptionMode} onValueChange={(v: "cloud" | "local") => updateConfig({ transcriptionMode: v })}>
                     <SelectTrigger><SelectValue /></SelectTrigger>
                     <SelectContent>
-                      <SelectItem value="cloud">Cloud (Lovable AI / OpenAI)</SelectItem>
                       <SelectItem value="local">Local Whisper</SelectItem>
                     </SelectContent>
                   </Select>
