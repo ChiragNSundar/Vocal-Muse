@@ -191,7 +191,7 @@ function ReferencesPage() {
                 <span className="font-semibold text-sm font-display">Fingerprint Preview: {preview.name}</span>
               </div>
               <Badge variant="outline" className="font-mono text-xs">
-                Target: {preview.syllables.mean} syl/bar
+                Target: {preview.avgSyllablesPerBar} syl/bar
               </Badge>
             </div>
             <pre className="text-xs whitespace-pre-wrap font-mono leading-relaxed bg-background/80 p-3 rounded border border-border/50 max-h-48 overflow-y-auto">
@@ -236,15 +236,15 @@ function ReferencesPage() {
                   </div>
                   <div className="flex gap-1.5 flex-wrap mt-2">
                     <Badge variant="secondary" className="text-[10px]">
-                      {fp.syllables.mean} syl/bar
+                      {fp.avgSyllablesPerBar} syl/bar
                     </Badge>
                     <Badge variant="outline" className="text-[10px]">
-                      vowels: {fp.vowelPalette.slice(0, 4).join(", ")}
+                      vowels: {Object.keys(fp.vowelHistogram).slice(0, 4).join(", ")}
                     </Badge>
                   </div>
                 </div>
                 <div className="text-[11px] text-muted-foreground/80 font-mono truncate pt-2 border-t border-border/40">
-                  {fp.bars[0]}
+                  {fp.barCount} bars analyzed
                 </div>
               </Card>
             ))}
