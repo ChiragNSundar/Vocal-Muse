@@ -139,3 +139,27 @@ export function classifyScheme(scheme: string): "AABB" | "ABAB" | "AAAA" | "free
   if (head === "ABAB") return "ABAB";
   return "freeform";
 }
+
+// Extract vowel nuclei (sequence of vowel clusters) across a line for mumble matching
+export function extractVowelNuclei(line: string): string[] {
+  if (!line) return [];
+  const cleaned = line
+    .toLowerCase()
+    .replace(/\([^)]*\)/g, " ")
+    .replace(/[^a-z\s]/g, " ");
+  const matches = cleaned.match(/[aeiouy]+/g);
+  return matches ? matches.map((v) => v.toUpperCase()) : [];
+}
+
+// Compare how closely two vowel sequences resonate (0..1.0)
+export function vowelResonanceScore(a: string[], b: string[]): number {
+  if (!a.length || !b.length) return 0;
+  let matches = 0;
+  const len = Math.min(a.length, b.length);
+  for (let i = 0; i < len; i++) {
+    if (a[i] === b[i] || a[i].slice(0, 1) === b[i].slice(0, 1)) {
+      matches++;
+    }
+  }
+  return Number((matches / Math.max(a.length, b.length)).toFixed(2));
+}
