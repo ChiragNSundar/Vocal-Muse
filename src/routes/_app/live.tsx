@@ -30,6 +30,7 @@ import {
   calibrateWithRetry, MIN_CONFIDENCE,
 } from "@/lib/latency-calibration";
 import { RhymeLookup } from "@/components/RhymeLookup";
+import { PocketGrid, type BarPocketItem } from "@/components/PocketGrid";
 import { isLocalOnly, putTrack, putBars, putBlob, getDeviceId as getLocalDeviceId, loadLlmConfig } from "@/lib/local-store";
 import { transcribeLocal } from "@/lib/local-transcribe";
 import { runLocalPipeline, type LocalPipelineResult } from "@/lib/local-pipeline";
@@ -480,6 +481,20 @@ function LivePage() {
           </span>
         </div>
       </Card>
+
+      {bars.filter((b) => b.line).length > 0 && (
+        <PocketGrid
+          bars={bars
+            .filter((b) => b.line)
+            .map((b) => ({
+              index: b.index,
+              text: b.line!,
+              syllables: b.syllables,
+              endSound: b.endSound,
+            }))}
+          title="Live Pocket & Syllable Grid"
+        />
+      )}
 
       <Card className="p-0 overflow-hidden">
         <div className="px-5 py-3 border-b text-xs uppercase tracking-wider text-muted-foreground flex items-center justify-between">
