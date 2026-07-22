@@ -39,32 +39,32 @@ Explore the core studios and modules of **Vocal Muse**:
 ### 1. Track Library (`/library`)
 *The central dashboard for managing your tracks, lyrics, audio takes, and metadata.*
 
-![Track Library](docs/screenshots/track_library.png)
+![Track Library](./docs/screenshots/track_library.png)
 
 ### 2. New Track Studio (`/new`)
 *Create new songs from mumble transcripts, live mic recordings, or uploaded audio files.*
 
-![New Track Studio](docs/screenshots/new_track_studio.png)
+![New Track Studio](./docs/screenshots/new_track_studio.png)
 
 ### 3. Live Punch-In Studio (`/live`)
 *Real-time vocal capture and bar-by-bar punch-in recording with visual syllable pocket indicators.*
 
-![Live Punch-In Studio](docs/screenshots/live_punch_in.png)
+![Live Punch-In Studio](./docs/screenshots/live_punch_in.png)
 
 ### 4. Reference & Style Intelligence (`/references`)
 *1-click web lyric scraper to extract cadence blueprints (Cadence Fingerprints) and train your AI ghostwriter.*
 
-![Reference & Style Intelligence](docs/screenshots/reference_and_style.png)
+![Reference & Style Intelligence](./docs/screenshots/reference_and_style.png)
 
 ### 5. Connect Local AI (`/connect`)
 *Auto-scan localhost to wire up local LLM servers (LM Studio, Ollama) and Whisper STT servers.*
 
-![Connect Local AI](docs/screenshots/connect_local_ai.png)
+![Connect Local AI](./docs/screenshots/connect_local_ai.png)
 
 ### 6. Settings Dashboard (`/settings`)
 *Monitor local storage quotas (IndexedDB / OPFS), clear caches, and run synthetic self-play training benchmarks.*
 
-![Settings Dashboard](docs/screenshots/settings_dashboard.png)
+![Settings Dashboard](./docs/screenshots/settings_dashboard.png)
 
 ---
 
