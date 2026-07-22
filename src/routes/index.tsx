@@ -201,32 +201,6 @@ function Landing() {
             ))}
           </div>
         </section>
-
-        {/* Final CTA */}
-        <section className="max-w-3xl mx-auto px-4 sm:px-6 pb-20 sm:pb-28 text-center">
-          <div className="p-8 sm:p-12 rounded-2xl border border-primary/20 bg-gradient-to-br from-primary/5 via-card to-violet-500/5 backdrop-blur-sm">
-            <h2 className="font-display text-2xl sm:text-3xl font-bold mb-4">
-              Ready to write?
-            </h2>
-            <p className="text-muted-foreground mb-8 max-w-md mx-auto">
-              No sign-up required. Just connect a local LLM and start recording.
-            </p>
-            <div className="flex flex-col sm:flex-row gap-3 justify-center">
-              <Link to="/new">
-                <Button size="lg" className="px-8 h-12 shadow-lg shadow-primary/20">
-                  <Mic className="h-5 w-5 mr-2" />
-                  Create Your First Track
-                </Button>
-              </Link>
-              <Link to="/connect">
-                <Button size="lg" variant="outline" className="px-8 h-12">
-                  <Cpu className="h-5 w-5 mr-2" />
-                  Connect Local AI
-                </Button>
-              </Link>
-            </div>
-          </div>
-        </section>
       </main>
 
       {/* Footer */}
