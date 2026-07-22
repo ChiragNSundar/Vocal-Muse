@@ -1,65 +1,119 @@
-# Vocal Muse (VoxScript) — 100% Fully Local Setup Guide
+# Vocal Muse (VoxScript)
 
-Vocal Muse is a modern studio workspace for songwriters and vocalists. It supports **100% offline local-only operation** with zero cloud dependencies, zero external network requests, and zero required Supabase keys.
+<p align="center">
+  <img src="https://img.shields.io/badge/Status-100%25%20Local--First-emerald?style=for-the-badge" alt="Local First" />
+  <img src="https://img.shields.io/badge/React-19-blue?style=for-the-badge&logo=react" alt="React 19" />
+  <img src="https://img.shields.io/badge/TanStack-Start%20v1-orange?style=for-the-badge" alt="TanStack Start" />
+  <img src="https://img.shields.io/badge/Vite-7-purple?style=for-the-badge&logo=vite" alt="Vite 7" />
+  <img src="https://img.shields.io/badge/Tailwind-v4-cyan?style=for-the-badge&logo=tailwindcss" alt="Tailwind v4" />
+  <img src="https://img.shields.io/badge/License-MIT-green?style=for-the-badge" alt="License MIT" />
+</p>
 
----
-
-## Smart 1-Click Launch ([start-local.bat](file:///d:/GitHub/Vocal%20Muse/start-local.bat))
-
-Simply double-click `start-local.bat` in the project folder. It performs automated pre-flight checks and tells you exactly what is ready or what needs attention:
-
-1. **Node.js Check**: Verifies Node.js is installed. If missing, displays clear instructions on how to install it.
-2. **Auto-Installer**: Detects if `node_modules` is missing and automatically runs `npm install`.
-3. **Local LLM Check**: Checks if LM Studio (port `1234`) or Ollama (port `11434`) is running. If not, displays a friendly notice with setup steps.
-4. **Whisper STT Server**: Checks if `faster-whisper-server` is active on port `9000` and automatically starts it in the background if installed.
-5. **Browser & Server Launch**: Launches **`http://localhost:8080`** in your default web browser and starts the development server.
+An open-source, local-first studio workspace for vocalists, songwriters, and producers. **Vocal Muse** turns mumble freestlyes into Drake/Kendrick-tier polished lyrics, maps audio cadences in real-time, and builds a personalized style memory—all running **100% offline** on your local machine with zero cloud lock-in.
 
 ---
 
-## Manual Command Line Launch
+## 💡 Inspiration: VoxSketch AI
+
+**Vocal Muse** is heavily inspired by **[VoxSketch AI](https://voxsketch.com/)**, pioneering the concept of turning raw vocal mumble recordings and spontaneous freestyles into structured, cadence-matched song lyrics.
+
+While cloud-based tools rely on remote APIs and subscription credits, **Vocal Muse** brings this workflow to the open-source community as a **100% local-first application**. Your audio recordings, vocal takes, and style memory never leave your device.
+
+---
+
+## ✨ Features
+
+- 🎙️ **Live Punch-In Studio**: Real-time voice capture with latency-compensated bar slicing and instant audio waveform preview.
+- 🧠 **Ghostwriter & Style Memory**: Multi-pass cadence matching, anti-cliché burned-phrase filter, and semantic embedding recall.
+- 🔒 **100% Offline & Private**: Zero API keys or cloud subscriptions required. Runs on local LLMs (**LM Studio**, **Ollama**) and local STT (**faster-whisper-server**).
+- 💾 **Local-First Storage**: Audio takes save to **OPFS** (Origin Private File System); tracks and style memories save to **IndexedDB**. Includes 1-click JSON bundle import/export.
+- 🎵 **Rhymes & Language Intelligence**: Offline CMUdict phonetic dictionary, keyless Datamuse API, and deep-linking into [RhymeWave](https://www.rhymewave.com/) for phonetic exploration.
+- 🕸️ **Knowledge Graph Enabled**: Complete codebase AST indexed with [Graphify](https://github.com/sponsors/safishamsi) for interactive architectural exploration.
+
+---
+
+## 🚀 Quickstart
+
+### Option A: Windows 1-Click Launcher (Recommended)
+Double-click `start-local.bat` in the project root. It automatically:
+1. Runs pre-flight diagnostic checks (Node.js version, missing dependencies).
+2. Auto-starts `faster-whisper-server` (voice transcription) on port `9000` if installed.
+3. Opens **[http://localhost:8080](http://localhost:8080)** in your web browser.
+4. Starts the local development server.
+
+### Option B: Command Line (Cross-Platform)
+
 ```bash
-# 1. Install dependencies (first time only)
-npm install
+# 1. Install dependencies (Bun or NPM)
+bun install   # or: npm install
 
-# 2. Run local dev server
-npm run dev
+# 2. Start development server
+bun dev       # or: npm run dev
 ```
-Then open **[http://localhost:8080](http://localhost:8080)** in your browser.
+
+Open **`http://localhost:8080`** in your browser.
 
 ---
 
-## Local AI Services Setup (Optional)
+## 🤖 Local AI Setup (Optional)
 
-### 1. LM Studio (Local LLM for Lyric Assistance & Style Generation)
-1. Download & open **LM Studio**.
-2. Search and load your preferred model (e.g. `Qwen2.5-7B`, `Llama-3.2-3B`).
-3. Click the **Developer / Local Server** tab (`< />`) on the left sidebar.
-4. Set **Port** to `1234` and click **Start Server**.
-5. Ensure **CORS** is **Enabled** in server settings so your browser can connect.
+### 1. Local LLM (LM Studio / Ollama)
+For offline AI lyric generation and ghostwriter assistance:
+- **LM Studio**: Open LM Studio $\rightarrow$ Load a model (e.g., `Qwen2.5-7B` or `Llama-3.2`) $\rightarrow$ Go to **Local Server** tab ($\langle/\rangle$) $\rightarrow$ Click **Start Server** (Port `1234`). Enable **CORS** in settings.
+- **Ollama**: Run `ollama pull llama3.1:8b` and start with `OLLAMA_ORIGINS='*' ollama serve`.
 
-### 2. Live Voice Punch-In (Local Whisper Transcription)
-To transcribe your vocal takes directly on your machine:
-```cmd
+### 2. Live Voice Transcription (faster-whisper)
+For real-time voice-to-text recording:
+```bash
 pip install faster-whisper-server
 faster-whisper-server --model Systran/faster-whisper-base.en --port 9000
 ```
-*(When running `start-local.bat`, it will detect and launch this automatically if installed).*
-
-### 3. Offline Rhyme & Phonetic Lookups
-Phonetic rhyming lookups use a bundled offline CMUdict & Datamuse lookup engine. No API keys or extra configuration needed.
 
 ---
 
-## In-App Connection Auto-Discovery
+## 🛠️ Architecture & Tech Stack
 
-You can also check, scan, and test all local services directly inside the app at any time:
-- Navigate to **Connect Page** (`http://localhost:8080/connect`) in the app navigation menu.
-- The app will automatically scan for active local servers on your network and let you connect with one click.
+```
+Vocal Muse Architecture
+├── src/routes/             # TanStack Start file-based routing (_app/studio, _app/settings, etc.)
+├── src/lib/local-pipeline  # Multi-pass cadence matching & ghostwriter refinement pipeline
+├── src/lib/local-store     # IndexedDB (tracks, bars) & OPFS (audio takes) local persistence
+├── src/lib/style-memory    # Few-shot vector recall & anti-cliché phrase burner
+├── src/lib/rhymes          # Phonetic lookup engine & RhymeWave deep-link integration
+└── graphify-out/          # Persistent AST Knowledge Graph (graph.html & GRAPH_REPORT.md)
+```
 
 ---
 
-## Local Storage & Persistence
+## 🤝 Contributing
 
-- **Tracks & Bars**: Saved directly to **IndexedDB** (`voxscript-local`).
-- **Audio Takes**: Saved directly to your browser's **Origin Private File System (OPFS)**.
-- **Backup & Export**: Go to **Settings → Export Bundle** to download a single `.json` file containing all your tracks, lyrics history, and audio recordings.
+We welcome contributions from developers, musicians, sound engineers, and AI enthusiasts!
+
+### How to Contribute:
+1. **Fork & Clone**:
+   ```bash
+   git clone https://github.com/ChiragNSundar/Vocal-Muse.git
+   cd Vocal-Muse
+   ```
+2. **Install & Run Tests**:
+   ```bash
+   bun install
+   bun test       # Vitest unit test suite (40/40 tests)
+   ```
+3. **Submit a Pull Request**:
+   - Create a feature branch (`git checkout -b feature/awesome-feature`).
+   - Ensure all tests pass (`bun test` or `npm test`).
+   - Open a PR with a clear description of your changes.
+
+### Conventions for Contributors:
+- Follow React 19 / TanStack Start patterns in `src/routes/`.
+- All browser-only APIs (`window`, `localStorage`, `OPFS`) must run inside `useEffect` or client guards.
+- Prefer `search-replace` edits over full-file rewrites.
+
+---
+
+## 📄 License & Acknowledgments
+
+- **License**: Released under the **MIT License**.
+- **Special Thanks**: Inspired by **[VoxSketch AI](https://voxsketch.com/)** for pioneering AI vocal mumble transcription.
+- **Phonetics**: Powered by CMUdict, Datamuse, and RhymeWave.
