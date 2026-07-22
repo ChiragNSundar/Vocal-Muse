@@ -36,6 +36,7 @@ import { addToStyleMemory, sampleStyleExamples, addBurnedPhrasesFromBars, loadBu
 import { recallStyleExamples, buildRecallQuery } from "@/lib/style-recall";
 import { Skeleton } from "@/components/ui/skeleton";
 import { QualityRadar } from "@/components/QualityRadar";
+import { PocketGrid, type BarPocketItem } from "@/components/PocketGrid";
 import { BarDiff } from "@/components/BarDiff";
 import { analyzeRepetition } from "@/lib/track-analytics";
 import {
@@ -251,6 +252,15 @@ function TrackPage() {
   const isProcessing = trackData ? (trackData.status !== "done" && trackData.status !== "error") : true;
 
   const flatLines = useMemo(() => lyrics ? lyrics.sections.flatMap((s) => s.lines) : [], [lyrics]);
+  const barPocketItems = useMemo<BarPocketItem[]>(() => {
+    if (!flatLines.length) return [];
+    return flatLines.map((line, idx) => ({
+      index: idx,
+      text: line,
+      syllables: countSyllables(line),
+      endSound: endRhymeKey(line),
+    }));
+  }, [flatLines]);
   const scheme = useMemo(() => classifyScheme(rhymeScheme(flatLines)), [flatLines]);
   const warnings = useMemo(() => analyzeRepetition(flatLines), [flatLines]);
   const badBarSet = useMemo(() => {
