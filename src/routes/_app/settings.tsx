@@ -346,89 +346,68 @@ function SettingsPage() {
       <Card className="p-6 space-y-4">
         <div className="flex items-center gap-2">
           <Brain className="h-5 w-5 text-primary" />
-          <h2 className="font-display text-lg font-semibold">AI Backend</h2>
+          <h2 className="font-display text-lg font-semibold">Local AI Backend</h2>
         </div>
 
-        <Tabs value={config.mode} onValueChange={(v) => update("mode", v as LlmConfig["mode"])}>
-          <TabsList className="grid w-full grid-cols-2">
-            <TabsTrigger value="cloud">
-              <Cloud className="h-4 w-4 mr-2" />
-              Lovable Cloud
-            </TabsTrigger>
-            <TabsTrigger value="local">
-              <Cpu className="h-4 w-4 mr-2" />
-              Local LLM
-            </TabsTrigger>
-          </TabsList>
+        <div className="space-y-4 pt-2">
+          <div className="rounded-md bg-muted/40 p-3 text-xs text-muted-foreground space-y-1">
+            <p className="font-semibold text-foreground">Setup (one time):</p>
+            <p>1. Install <a href="https://ollama.com" target="_blank" rel="noreferrer" className="text-primary underline">Ollama</a> or LM Studio.</p>
+            <p>2. Pull a capable model: <code className="bg-background px-1 rounded">ollama pull llama3.1:8b</code> (or qwen2.5:14b, mistral-small)</p>
+            <p>3. Allow this site to call your LLM:<br/><code className="bg-background px-1 rounded">OLLAMA_ORIGINS=&apos;*&apos; ollama serve</code></p>
+            <p>4. Test the connection below.</p>
+          </div>
 
-          <TabsContent value="cloud" className="space-y-3 pt-4">
-            <p className="text-sm text-muted-foreground">
-              Generation runs on Lovable's hosted models (Gemini 3 Flash). Uses your workspace credits.
-              Best quality, no setup, costs credits per track.
-            </p>
-          </TabsContent>
-
-<TabsContent value="local" className="space-y-4 pt-4">
-            <div className="rounded-md bg-muted/40 p-3 text-xs text-muted-foreground space-y-1">
-              <p className="font-semibold text-foreground">Setup (one time):</p>
-              <p>1. Install <a href="https://ollama.com" target="_blank" rel="noreferrer" className="text-primary underline">Ollama</a> or LM Studio.</p>
-              <p>2. Pull a capable model: <code className="bg-background px-1 rounded">ollama pull llama3.1:8b</code> (or qwen2.5:14b, mistral-small)</p>
-              <p>3. Allow this site to call your LLM:<br/><code className="bg-background px-1 rounded">OLLAMA_ORIGINS=&apos;*&apos; ollama serve</code></p>
-              <p>4. Test the connection below.</p>
-              <p className="text-amber-500">⚠ Local mode requires a pasted transcript — audio transcription stays on Lovable Cloud.</p>
-            </div>
-
+          <div className="space-y-2">
+            <Label htmlFor="url">Endpoint URL</Label>
+            <Input
+              id="url"
+              value={config.localBaseUrl}
+              onChange={(e) => update("localBaseUrl", e.target.value)}
+              placeholder="http://localhost:1234/v1"
+            />
+          </div>
+          <div className="grid grid-cols-2 gap-3">
             <div className="space-y-2">
-              <Label htmlFor="url">Endpoint URL</Label>
+              <Label htmlFor="model">Model name</Label>
               <Input
-                id="url"
-                value={config.localBaseUrl}
-                onChange={(e) => update("localBaseUrl", e.target.value)}
-                placeholder="http://localhost:11434/v1"
+                id="model"
+                value={config.localModel}
+                onChange={(e) => update("localModel", e.target.value)}
+                placeholder="local-model"
               />
             </div>
-            <div className="grid grid-cols-2 gap-3">
-              <div className="space-y-2">
-                <Label htmlFor="model">Model name</Label>
-                <Input
-                  id="model"
-                  value={config.localModel}
-                  onChange={(e) => update("localModel", e.target.value)}
-                  placeholder="llama3.1:8b"
-                />
-              </div>
-              <div className="space-y-2">
-                <Label htmlFor="key">API key (if required)</Label>
-                <Input
-                  id="key"
-                  value={config.localApiKey}
-                  onChange={(e) => update("localApiKey", e.target.value)}
-                  placeholder="ollama"
-                />
-              </div>
+            <div className="space-y-2">
+              <Label htmlFor="key">API key (if required)</Label>
+              <Input
+                id="key"
+                value={config.localApiKey}
+                onChange={(e) => update("localApiKey", e.target.value)}
+                placeholder="lm-studio"
+              />
             </div>
+          </div>
 
-            <div className="flex items-center gap-3">
-              <Button onClick={testConnection} disabled={pinging} variant="outline">
-                {pinging ? <Loader2 className="h-4 w-4 mr-2 animate-spin" /> : <Play className="h-4 w-4 mr-2" />}
-                Test connection
-              </Button>
-              {pingResult && (
-                <div className={`text-xs flex items-center gap-1 ${pingResult.ok ? "text-emerald-500" : "text-destructive"}`}>
-                  {pingResult.ok ? <Check className="h-3 w-3" /> : <X className="h-3 w-3" />}
-                  <span className="truncate max-w-md">{pingResult.message}</span>
-                </div>
-              )}
-            </div>
-          </TabsContent>
-        </Tabs>
+          <div className="flex items-center gap-3">
+            <Button onClick={testConnection} disabled={pinging} variant="outline">
+              {pinging ? <Loader2 className="h-4 w-4 mr-2 animate-spin" /> : <Play className="h-4 w-4 mr-2" />}
+              Test connection
+            </Button>
+            {pingResult && (
+              <div className={`text-xs flex items-center gap-1 ${pingResult.ok ? "text-emerald-500" : "text-destructive"}`}>
+                {pingResult.ok ? <Check className="h-3 w-3" /> : <X className="h-3 w-3" />}
+                <span className="truncate max-w-md">{pingResult.message}</span>
+              </div>
+            )}
+          </div>
+        </div>
       </Card>
 
       {/* Local Persistence */}
       <Card className="p-6 space-y-4">
         <div className="flex items-center gap-2">
           <Database className="h-5 w-5 text-primary" />
-          <h2 className="font-display text-lg font-semibold">Local Persistence (IndexedDB)</h2>
+          <h2 className="font-display text-lg font-semibold">Local Storage (IndexedDB & OPFS)</h2>
         </div>
         <p className="text-sm text-muted-foreground">
           Store tracks, audio takes, and style memory entirely in your browser. No cloud required.
@@ -436,9 +415,9 @@ function SettingsPage() {
         </p>
         <div className="flex items-center justify-between">
           <div>
-            <p className="font-medium">Local-only mode</p>
+            <p className="font-medium">Local storage mode</p>
             <p className="text-xs text-muted-foreground">
-              {localOnly ? "Enabled — all data stored in IndexedDB/OPFS" : "Disabled — using Lovable Cloud (Supabase)"}
+              Enabled — all data stored locally in IndexedDB & OPFS
             </p>
           </div>
           <Switch
@@ -449,10 +428,6 @@ function SettingsPage() {
         </div>
         <div className="text-xs text-muted-foreground space-y-1">
           <p>Storage used: {(storageEstimate.usedBytes / 1024 / 1024).toFixed(1)} MB / {(storageEstimate.quotaBytes / 1024 / 1024).toFixed(0)} MB</p>
-          <p className="text-amber-500">
-            {!(import.meta.env.VITE_SUPABASE_URL && import.meta.env.VITE_SUPABASE_ANON_KEY) && 
-              "⚠ No Supabase credentials detected — local mode enabled by default."}
-          </p>
         </div>
       </Card>
 

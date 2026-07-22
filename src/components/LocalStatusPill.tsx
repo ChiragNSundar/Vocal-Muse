@@ -21,18 +21,13 @@ export function LocalStatusPill() {
       // Sync memory cap on every boot — local mode can hold a much bigger
       // few-shot library than cloud (no per-request size limit).
       setMemoryLimits({ maxEntries: cfg.mode === "local" ? cfg.localMemoryCap : 200 });
-      if (cfg.mode !== "local") { setStatus("cloud"); setTip("Using Lovable Cloud models"); return; }
       const llm = await pingLocalLlm(cfg);
       if (!llm.ok) { if (!cancelled) { setStatus("local-broken"); setTip(llm.message); } return; }
-      if (cfg.transcriptionMode === "local") {
-        const w = await pingLocalWhisper({ baseUrl: cfg.whisperBaseUrl, backend: cfg.whisperBackend, model: cfg.whisperModel, language: cfg.whisperLanguage || undefined });
-        if (!cancelled) {
-          if (w.ok && isOfflineReady(cfg)) { setStatus("offline-ready"); setTip(`Offline-ready · ${cfg.localModel} + Whisper`); }
-          else { setStatus("local-ready"); setTip(`Local LLM ready; Whisper unreachable (${w.message})`); }
-        }
-        return;
+      const w = await pingLocalWhisper({ baseUrl: cfg.whisperBaseUrl, backend: cfg.whisperBackend, model: cfg.whisperModel, language: cfg.whisperLanguage || undefined });
+      if (!cancelled) {
+        if (w.ok) { setStatus("offline-ready"); setTip(`Offline-ready · ${cfg.localModel} + Whisper`); }
+        else { setStatus("local-ready"); setTip(`Local LLM ready · ${cfg.localModel}`); }
       }
-      if (!cancelled) { setStatus("local-ready"); setTip(`Local LLM ready · ${cfg.localModel} (cloud transcription)`); }
     }
     check();
     const t = setInterval(check, 30_000);
