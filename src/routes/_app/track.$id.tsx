@@ -1010,6 +1010,10 @@ function TrackPage() {
           </Card>
         )}
 
+        {barPocketItems.length > 0 && (
+          <PocketGrid bars={barPocketItems} title="Bar Pocket & Syllable Grid" />
+        )}
+
         <Collapsible open={editingBrief} onOpenChange={(o) => {
           setEditingBrief(o);
           if (o) setBriefDraft({ ...DEFAULT_BRIEF, ...(styleBrief ?? {}) });
