@@ -17,6 +17,7 @@ export const Route = createFileRoute("/_app/library")({
 });
 
 function LibraryPage() {
+  const navigate = useNavigate();
   const fetchTracks = useServerFn(listTracks);
   const localMode = isLocalOnly();
   const { data, isLoading } = useQuery({
