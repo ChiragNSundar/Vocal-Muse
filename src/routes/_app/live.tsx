@@ -31,6 +31,8 @@ import {
 } from "@/lib/latency-calibration";
 import { RhymeLookup } from "@/components/RhymeLookup";
 import { PocketGrid, type BarPocketItem } from "@/components/PocketGrid";
+import { AudioWaveform } from "@/components/AudioWaveform";
+import { MetronomeRing } from "@/components/MetronomeRing";
 import { isLocalOnly, putTrack, putBars, putBlob, getDeviceId as getLocalDeviceId, loadLlmConfig } from "@/lib/local-store";
 import { transcribeLocal } from "@/lib/local-transcribe";
 import { runLocalPipeline, type LocalPipelineResult } from "@/lib/local-pipeline";
@@ -356,7 +358,38 @@ function LivePage() {
         </div>
       </div>
 
+      {/* Vocal recording guidance */}
+      <div className="rounded-lg border border-amber-500/20 bg-amber-500/5 p-4 space-y-3 text-sm">
+        <div className="flex items-start gap-2.5">
+          <span className="text-base leading-none mt-0.5">🎤</span>
+          <div>
+            <div className="font-semibold text-foreground">Record / upload ONLY your vocals (acapella)</div>
+            <div className="text-xs text-muted-foreground mt-0.5">
+              No background music, beats, or loud room noise should be audible in the recording.
+            </div>
+          </div>
+        </div>
+        <div className="flex items-start gap-2.5">
+          <span className="text-base leading-none mt-0.5">✨</span>
+          <div>
+            <div className="font-semibold text-foreground">Keep your vocals clear and unprocessed</div>
+            <div className="text-xs text-muted-foreground mt-0.5">
+              Avoid reverb, delay, distortion, heavy autotune, or other FX. Raw, unprocessed vocals are preferred.
+            </div>
+          </div>
+        </div>
+      </div>
+
       <Card className="p-6 space-y-5">
+        {/* Real-time Oscilloscope Waveform & Metronome Arc */}
+        <div className="grid grid-cols-1 md:grid-cols-4 gap-4 items-center p-4 rounded-xl border bg-background/50">
+          <div className="md:col-span-3">
+            <AudioWaveform stream={liveCaptureRef.current?.stream ?? null} recording={running} height={100} />
+          </div>
+          <div className="flex justify-center">
+            <MetronomeRing bpm={bpm} active={running} beatsPerBar={beatsPerBar} size={110} />
+          </div>
+        </div>
         <div className="grid grid-cols-1 md:grid-cols-3 gap-5">
           <div className="space-y-2">
             <Label className="text-xs uppercase tracking-wider text-muted-foreground">BPM · {bpm}</Label>

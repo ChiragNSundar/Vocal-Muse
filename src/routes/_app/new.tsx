@@ -417,6 +417,28 @@ function NewTrack() {
               <input type="file" accept="audio/*" className="hidden" onChange={onFile} />
             </label>
 
+            {/* Recording tips */}
+            <div className="rounded-lg border border-amber-500/20 bg-amber-500/5 p-4 space-y-3 text-sm">
+              <div className="flex items-start gap-2.5">
+                <span className="text-base leading-none mt-0.5">🎤</span>
+                <div>
+                  <div className="font-semibold text-foreground">Record / upload ONLY your vocals (acapella)</div>
+                  <div className="text-xs text-muted-foreground mt-0.5">
+                    No background music, beats, or loud room noise should be audible in the recording.
+                  </div>
+                </div>
+              </div>
+              <div className="flex items-start gap-2.5">
+                <span className="text-base leading-none mt-0.5">✨</span>
+                <div>
+                  <div className="font-semibold text-foreground">Keep your vocals clear and unprocessed</div>
+                  <div className="text-xs text-muted-foreground mt-0.5">
+                    Avoid reverb, delay, distortion, heavy autotune, or other FX. Raw, unprocessed vocals are preferred.
+                  </div>
+                </div>
+              </div>
+            </div>
+
             <div className="flex items-center gap-3 text-xs text-muted-foreground my-2">
               <div className="h-px bg-border flex-1" />
               or record directly
