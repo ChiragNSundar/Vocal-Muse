@@ -69,6 +69,81 @@ export function isBrowser() {
   return typeof window !== "undefined" && typeof localStorage !== "undefined";
 }
 
+export const DEFAULT_STYLE_SEEDS: StyleMemoryEntry[] = [
+  {
+    id: "seed-lyrical-1",
+    title: "Midnight Notebooks (Lyrical Pocket)",
+    drakeScore: 9.4,
+    vibe: "boom-bap",
+    genre: "hip-hop",
+    attitude: ["reflective", "sharp"],
+    bars: [
+      "walking through Brooklyn with the tape deck humming",
+      "copped the vintage leather jacket just to match the autumn",
+      "every notebook holds a winter that I barely got through",
+      "pencil smudges on the margin where the truth was drawn through",
+      "mama told me keep the faith when the budget got thin",
+      "now the stadium seats filled up to the brim"
+    ],
+    createdAt: 1770000000000,
+    source: "self-play"
+  },
+  {
+    id: "seed-trap-1",
+    title: "Penthouse Curtains (Late Night Trap)",
+    drakeScore: 9.2,
+    vibe: "trap",
+    genre: "trap",
+    attitude: ["paranoid", "boss"],
+    bars: [
+      "penthouse view but the curtains pulled tight",
+      "counting up the backend twice through the night",
+      "phone stay silent on airplane mode",
+      "brothers in the city got the whole street sold",
+      "never needed praise from a man in a suit",
+      "we was in the basement putting work in the root"
+    ],
+    createdAt: 1770000000000,
+    source: "self-play"
+  },
+  {
+    id: "seed-rnb-1",
+    title: "3 AM Toronto (Melodic Soul)",
+    drakeScore: 9.5,
+    vibe: "rnb",
+    genre: "r&b",
+    attitude: ["vulnerable", "smooth"],
+    bars: [
+      "3 AM in Toronto with the fog on the glass",
+      "left your silver ring sitting right beside the key pass",
+      "every song I write still sounding like your middle name",
+      "trying not to call when the rain hit the windowpane",
+      "we gave it all away just to buy a little peace",
+      "now I'm sleeping in a bed where the silence don't cease"
+    ],
+    createdAt: 1770000000000,
+    source: "self-play"
+  },
+  {
+    id: "seed-drill-1",
+    title: "Cold Pressure (Drill Pocket)",
+    drakeScore: 9.1,
+    vibe: "drill",
+    genre: "drill",
+    attitude: ["focused", "loyal"],
+    bars: [
+      "lights down low when we sliding through the block",
+      "day one bro got the key to the lock",
+      "no fake love when the pressure getting heavy",
+      "built this foundation, hands stayed steady",
+      "talking out of turn get you left on read",
+      "we just stack the paper, keep the family fed"
+    ],
+    createdAt: 1770000000000,
+    source: "self-play"
+  }
+];
+
 export function loadStyleMemory(): StyleMemoryEntry[] {
   if (!isBrowser()) return [];
   try {
@@ -191,7 +266,8 @@ export function sampleStyleExamples(
   count = 3,
   filter?: { vibe?: string; genre?: string },
 ): { bars: string[]; meta: string }[] {
-  const all = loadStyleMemory();
+  let all = loadStyleMemory();
+  if (!all.length) all = DEFAULT_STYLE_SEEDS;
   let pool = all;
   if (filter?.vibe) pool = pool.filter((e) => e.vibe === filter.vibe);
   if (filter?.genre) pool = pool.filter((e) => e.genre === filter.genre);

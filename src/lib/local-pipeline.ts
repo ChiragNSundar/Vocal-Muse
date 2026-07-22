@@ -82,11 +82,11 @@ export type ProgressEvent = {
 // Prompt scaffolding
 // ---------------------------------------------------------------------------
 
-const CRAFT = `HARD CRAFT RULES:
-- No tired clichés (grind never stop, demons in my head, started from the bottom, ride or die, shine bright, level up, etc).
-- Concrete images > abstractions. Specific brands/places/textures.
-- Match syllable count within ±1; match the end-sound rhyme.
-- Every bar earns its spot. No filler bars.`;
+const CRAFT = `HARD CRAFT RULES FOR ELITE LYRICISM:
+- NO generic AI fluff (realm, tapestry, echo, shadow, whisper, journey, starlight, grind never stops, demons inside).
+- USE CONCRETE & VIVID DETAILS: real places, specific vehicles, exact times, tactile textures, brand names, and authentic slang.
+- POCKET & CADENCE: Match syllable count strictly (±1 syllable per bar) and maintain internal multisyllabic rhyme schemes.
+- CONVERSATIONAL FLOW: Write like an authentic lyricist riding a pocket, not an AI writing poetry. Every line must sound natural when spoken/rapped.`;
 
 function briefBlock(b: LocalBrief | undefined): string {
   if (!b) return "STYLE BRIEF: auto-detect everything from the transcript.";

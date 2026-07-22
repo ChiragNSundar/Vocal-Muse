@@ -59,8 +59,8 @@ export async function recallStyleExamples(
 ): Promise<RecalledExample[]> {
   const count = Math.max(1, opts.count ?? 3);
   const trimmedQuery = (query || "").trim();
-  const memory = loadStyleMemory();
-  if (!memory.length) return [];
+  let memory = loadStyleMemory();
+  if (!memory.length) memory = DEFAULT_STYLE_SEEDS;
 
   // Apply coarse filter first to keep embedding cost low.
   let pool = memory;
