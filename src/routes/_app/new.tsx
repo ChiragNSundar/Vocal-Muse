@@ -14,7 +14,8 @@ import {
   CollapsibleContent,
   CollapsibleTrigger,
 } from "@/components/ui/collapsible";
-import { Upload, Mic, Square, Loader2, Sliders, ChevronDown, Cpu, Cloud, Sparkles, Copy } from "lucide-react";
+import { Tabs, TabsList, TabsTrigger, TabsContent } from "@/components/ui/tabs";
+import { Upload, Mic, Square, Loader2, Sliders, ChevronDown, Cpu, Cloud, Sparkles, Copy, FileText } from "lucide-react";
 import { toast } from "sonner";
 import { loadLlmConfig, isOfflineReady } from "@/lib/llm-config";
 import { transcribeLocal } from "@/lib/local-transcribe";
@@ -386,92 +387,105 @@ function NewTrack() {
         </CollapsibleContent>
       </Collapsible>
 
-      {llmMode === "local" ? (
-        <Card className="p-6 space-y-4">
-          <div>
-            <h2 className="font-display font-semibold">Local LLM mode</h2>
-            <p className="text-xs text-muted-foreground mt-1">
-              Paste your mumble/freestyle transcript. Pipeline runs entirely on your machine —
-              no Lovable credits used.
-            </p>
-          </div>
-          <Textarea
-            value={localTranscript}
-            onChange={(e) => setLocalTranscript(e.target.value)}
-            placeholder="uh, yeah, like I'm driving through the city late at night, palm trees blurring..."
-            rows={6}
-            className="font-mono text-xs"
-          />
-          <Button onClick={runLocal} disabled={busy === "local"} className="w-full">
-            {busy === "local" ? (
-              <><Loader2 className="h-4 w-4 mr-2 animate-spin" /> {localProgress || "Generating…"}</>
-            ) : (
-              <><Sparkles className="h-4 w-4 mr-2" /> Generate locally</>
-            )}
-          </Button>
+      <Card className="p-6 space-y-4">
+        <div>
+          <h2 className="font-display font-semibold">Local Generation</h2>
+          <p className="text-xs text-muted-foreground mt-1">
+            Record voice, upload audio, or paste transcript. Pipeline runs 100% on your machine.
+          </p>
+        </div>
 
-          {localResult && (
-            <div className="space-y-3 pt-3 border-t">
-              <div className="flex items-center justify-between">
-                <h3 className="font-display font-semibold">{localResult.lyrics.title}</h3>
-                <div className="flex items-center gap-2">
-                  <Badge variant="secondary">{localResult.score.toFixed(1)}/10</Badge>
-                  <Button
-                    variant="ghost"
-                    size="sm"
-                    onClick={() => {
-                      const txt = localResult.lyrics.sections
-                        .map((s) => `[${s.type.toUpperCase()}]\n${s.lines.join("\n")}`)
-                        .join("\n\n");
-                      navigator.clipboard.writeText(txt);
-                      toast.success("Copied");
-                    }}
-                  >
-                    <Copy className="h-3.5 w-3.5" />
-                  </Button>
-                </div>
+        <Tabs defaultValue="audio" className="w-full">
+          <TabsList className="grid w-full grid-cols-2">
+            <TabsTrigger value="audio">
+              <Mic className="h-4 w-4 mr-2" />
+              Record / Upload Audio
+            </TabsTrigger>
+            <TabsTrigger value="transcript">
+              <FileText className="h-4 w-4 mr-2" />
+              Paste Transcript
+            </TabsTrigger>
+          </TabsList>
+
+          <TabsContent value="audio" className="space-y-4 pt-4">
+            <label className="block border-2 border-dashed border-border rounded-lg p-8 text-center cursor-pointer hover:border-primary/50 transition-colors">
+              <Upload className="h-7 w-7 text-primary mx-auto mb-2" />
+              <div className="font-display font-semibold text-sm">Upload audio file</div>
+              <div className="text-xs text-muted-foreground mt-1">
+                mp3, wav, m4a, webm · up to 25 MB
               </div>
-              {localResult.lyrics.sections.map((s, i) => (
-                <div key={i}>
-                  <div className="text-[10px] uppercase tracking-wider text-muted-foreground mb-1">{s.type}</div>
-                  <pre className="text-sm whitespace-pre-wrap font-sans leading-relaxed">{s.lines.join("\n")}</pre>
+              <input type="file" accept="audio/*" className="hidden" onChange={onFile} />
+            </label>
+
+            <div className="flex items-center gap-3 text-xs text-muted-foreground my-2">
+              <div className="h-px bg-border flex-1" />
+              or record directly
+              <div className="h-px bg-border flex-1" />
+            </div>
+
+            <div className="flex justify-center">
+              {recording ? (
+                <Button size="lg" variant="destructive" onClick={stopRecording}>
+                  <Square className="h-4 w-4 mr-2 fill-current" />
+                  Stop recording
+                </Button>
+              ) : (
+                <Button size="lg" onClick={startRecording}>
+                  <Mic className="h-4 w-4 mr-2" />
+                  Start recording
+                </Button>
+              )}
+            </div>
+          </TabsContent>
+
+          <TabsContent value="transcript" className="space-y-4 pt-4">
+            <Textarea
+              value={localTranscript}
+              onChange={(e) => setLocalTranscript(e.target.value)}
+              placeholder="uh, yeah, like I'm driving through the city late at night, palm trees blurring..."
+              rows={6}
+              className="font-mono text-xs"
+            />
+            <Button onClick={runLocal} disabled={busy === "local"} className="w-full">
+              {busy === "local" ? (
+                <><Loader2 className="h-4 w-4 mr-2 animate-spin" /> {localProgress || "Generating…"}</>
+              ) : (
+                <><Sparkles className="h-4 w-4 mr-2" /> Generate locally</>
+              )}
+            </Button>
+
+            {localResult && (
+              <div className="space-y-3 pt-3 border-t">
+                <div className="flex items-center justify-between">
+                  <h3 className="font-display font-semibold">{localResult.lyrics.title}</h3>
+                  <div className="flex items-center gap-2">
+                    <Badge variant="secondary">{localResult.score.toFixed(1)}/10</Badge>
+                    <Button
+                      variant="ghost"
+                      size="sm"
+                      onClick={() => {
+                        const txt = localResult.lyrics.sections
+                          .map((s) => `[${s.type.toUpperCase()}]\n${s.lines.join("\n")}`)
+                          .join("\n\n");
+                        navigator.clipboard.writeText(txt);
+                        toast.success("Copied");
+                      }}
+                    >
+                      <Copy className="h-3.5 w-3.5" />
+                    </Button>
+                  </div>
                 </div>
-              ))}
-            </div>
-          )}
-        </Card>
-      ) : (
-        <Card className="p-8">
-          <label className="block border-2 border-dashed border-border rounded-lg p-10 text-center cursor-pointer hover:border-primary/50 transition-colors">
-            <Upload className="h-7 w-7 text-primary mx-auto mb-3" />
-            <div className="font-display font-semibold">Upload audio file</div>
-            <div className="text-xs text-muted-foreground mt-1">
-              mp3, wav, m4a, webm · up to 25 MB
-            </div>
-            <input type="file" accept="audio/*" className="hidden" onChange={onFile} />
-          </label>
-
-          <div className="flex items-center gap-3 my-6 text-xs text-muted-foreground">
-            <div className="h-px bg-border flex-1" />
-            or record now
-            <div className="h-px bg-border flex-1" />
-          </div>
-
-          <div className="flex justify-center">
-            {recording ? (
-              <Button size="lg" variant="destructive" onClick={stopRecording}>
-                <Square className="h-4 w-4 mr-2 fill-current" />
-                Stop recording
-              </Button>
-            ) : (
-              <Button size="lg" onClick={startRecording}>
-                <Mic className="h-4 w-4 mr-2" />
-                Start recording
-              </Button>
+                {localResult.lyrics.sections.map((s, i) => (
+                  <div key={i}>
+                    <div className="text-[10px] uppercase tracking-wider text-muted-foreground mb-1">{s.type}</div>
+                    <pre className="text-sm whitespace-pre-wrap font-sans leading-relaxed">{s.lines.join("\n")}</pre>
+                  </div>
+                ))}
+              </div>
             )}
-          </div>
-        </Card>
-      )}
+          </TabsContent>
+        </Tabs>
+      </Card>
     </div>
   );
 }
