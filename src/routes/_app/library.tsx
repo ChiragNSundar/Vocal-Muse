@@ -64,16 +64,14 @@ function LibraryPage() {
           ))}
         </div>
       ) : !data || data.length === 0 ? (
-        <Card className="p-12 text-center">
-          <Mic className="h-8 w-8 text-primary mx-auto mb-3" />
-          <h3 className="font-display text-lg font-semibold">No tracks yet</h3>
-          <p className="text-sm text-muted-foreground mt-1 mb-5">
-            Upload or record a freestyle to get started.
-          </p>
-          <Link to="/new">
-            <Button>Create your first track</Button>
-          </Link>
-        </Card>
+        <EmptyState
+          icon={Mic}
+          iconColor="text-primary"
+          title="No tracks yet"
+          description="Upload or record a freestyle to get started. Your AI ghostwriter will turn mumbled flows into polished lyrics."
+          actionLabel="Create your first track"
+          onAction={() => navigate({ to: "/new" })}
+        />
       ) : (
         <div className="grid gap-3">
           {data.map((t) => (
