@@ -7,6 +7,13 @@ import { Card } from "@/components/ui/card";
 import { Badge } from "@/components/ui/badge";
 import { Tabs, TabsList, TabsTrigger, TabsContent } from "@/components/ui/tabs";
 import {
+  Dialog,
+  DialogContent,
+  DialogHeader,
+  DialogTitle,
+  DialogDescription,
+} from "@/components/ui/dialog";
+import {
   buildFingerprint,
   fingerprintToConstraints,
   loadFingerprints,
@@ -23,7 +30,7 @@ import {
 } from "@/lib/style-memory";
 import { searchWebLyrics, type WebLyricsResult } from "@/lib/lyrics-fetcher";
 import { toast } from "sonner";
-import { Trash2, Sparkles, FileText, Search, Globe, Check, Loader2, Music, Brain, Target, Zap } from "lucide-react";
+import { Trash2, Sparkles, FileText, Search, Globe, Check, Loader2, Music, Brain, Target, Zap, Eye, ChevronDown, ChevronUp } from "lucide-react";
 
 export const Route = createFileRoute("/_app/references")({
   head: () => ({
@@ -48,6 +55,14 @@ function ReferencesPage() {
   const [vibeTag, setVibeTag] = useState("");
   const [preview, setPreview] = useState<Fingerprint | null>(null);
   const [selectedResult, setSelectedResult] = useState<WebLyricsResult | null>(null);
+
+  // Inspector modal & expansion state
+  const [viewLyricsModal, setViewLyricsModal] = useState<{ title: string; lyrics: string } | null>(null);
+  const [expandedItems, setExpandedItems] = useState<Record<string, boolean>>({});
+
+  function toggleExpanded(id: string) {
+    setExpandedItems((prev) => ({ ...prev, [id]: !prev[id] }));
+  }
 
   async function handleWebSearch() {
     if (!searchQuery.trim()) {
@@ -170,7 +185,7 @@ function ReferencesPage() {
       <div>
         <h1 className="font-display text-3xl font-bold">Reference & Style Intelligence</h1>
         <p className="text-muted-foreground mt-1">
-          Search any track on the web or paste lyrics. Extract structural **Cadence Fingerprints** for single tracks or **Ingest into Style Memory** to train your AI ghostwriter permanently.
+          Search any track on the web or paste lyrics. Inspect extracted lyrics, save **Cadence Fingerprints**, or **Ingest into Style Memory** to train your AI ghostwriter.
         </p>
       </div>
 
@@ -202,7 +217,7 @@ function ReferencesPage() {
 
             {searchResults.length > 0 && !preview && (
               <div className="space-y-2 pt-2">
-                <div className="text-xs uppercase tracking-wider text-muted-foreground font-semibold">Select a song to ingest</div>
+                <div className="text-xs uppercase tracking-wider text-muted-foreground font-semibold">Select a song to inspect & ingest</div>
                 <div className="grid gap-2">
                   {searchResults.map((r) => (
                     <div
@@ -219,6 +234,10 @@ function ReferencesPage() {
                         <div className="text-[11px] text-muted-foreground font-mono mt-0.5">{r.lines.length} lines extracted</div>
                       </div>
                       <div className="flex gap-1.5 shrink-0">
+                        <Button size="sm" variant="ghost" onClick={() => setViewLyricsModal({ title: `${r.artistName} — ${r.trackName}`, lyrics: r.lyrics })}>
+                          <Eye className="h-3.5 w-3.5 mr-1" />
+                          View Lyrics
+                        </Button>
                         <Button size="sm" variant="outline" onClick={() => handleSelectResult(r)}>
                           <Target className="h-3.5 w-3.5 mr-1 text-primary" />
                           Analyze Pocket
@@ -273,9 +292,16 @@ function ReferencesPage() {
                 <Check className="h-4 w-4 text-primary" />
                 <span className="font-semibold text-sm font-display">Fingerprint Preview: {preview.name}</span>
               </div>
-              <Badge variant="outline" className="font-mono text-xs">
-                Target: {preview.avgSyllablesPerBar} syl/bar
-              </Badge>
+              <div className="flex items-center gap-2">
+                <Badge variant="outline" className="font-mono text-xs">
+                  Target: {preview.avgSyllablesPerBar} syl/bar
+                </Badge>
+                {text && (
+                  <Button size="sm" variant="ghost" className="h-7 text-xs" onClick={() => setViewLyricsModal({ title: preview.name, lyrics: text })}>
+                    <Eye className="h-3.5 w-3.5 mr-1" /> View Extracted Lyrics
+                  </Button>
+                )}
+              </div>
             </div>
             <pre className="text-xs whitespace-pre-wrap font-mono leading-relaxed bg-background/80 p-3 rounded border border-border/50 max-h-48 overflow-y-auto">
 {fingerprintToConstraints(preview)}
@@ -340,8 +366,19 @@ function ReferencesPage() {
                       </Badge>
                     </div>
                   </div>
-                  <div className="text-[11px] text-muted-foreground/80 font-mono truncate pt-2 border-t border-border/40">
-                    {fp.barCount} bars analyzed
+                  <div className="pt-2 border-t border-border/40 space-y-2">
+                    <div className="text-[11px] text-muted-foreground/80 font-mono truncate">
+                      {fp.barCount} bars analyzed
+                    </div>
+                    <Button variant="ghost" size="sm" className="w-full text-xs h-7 justify-between" onClick={() => toggleExpanded(fp.id)}>
+                      <span>{expandedItems[fp.id] ? "Hide Constraints" : "View Constraints"}</span>
+                      {expandedItems[fp.id] ? <ChevronUp className="h-3.5 w-3.5" /> : <ChevronDown className="h-3.5 w-3.5" />}
+                    </Button>
+                    {expandedItems[fp.id] && (
+                      <pre className="text-[11px] whitespace-pre-wrap font-mono leading-relaxed bg-background/80 p-2.5 rounded border border-border/50 max-h-40 overflow-y-auto mt-2">
+{fingerprintToConstraints(fp)}
+                      </pre>
+                    )}
                   </div>
                 </Card>
               ))}
@@ -381,8 +418,24 @@ function ReferencesPage() {
                       </Badge>
                     </div>
                   </div>
-                  <div className="text-[11px] text-muted-foreground/80 font-mono truncate pt-2 border-t border-border/40">
-                    "{item.bars[0] || ""}"
+                  <div className="pt-2 border-t border-border/40 space-y-2">
+                    <div className="text-[11px] text-muted-foreground/80 font-mono truncate">
+                      "{item.bars[0] || ""}"
+                    </div>
+                    <Button variant="ghost" size="sm" className="w-full text-xs h-7 justify-between" onClick={() => toggleExpanded(item.id)}>
+                      <span>{expandedItems[item.id] ? "Hide Bars" : "View Stored Bars"}</span>
+                      {expandedItems[item.id] ? <ChevronUp className="h-3.5 w-3.5" /> : <ChevronDown className="h-3.5 w-3.5" />}
+                    </Button>
+                    {expandedItems[item.id] && (
+                      <div className="text-[11px] whitespace-pre-wrap font-mono leading-relaxed bg-background/80 p-2.5 rounded border border-border/50 max-h-48 overflow-y-auto space-y-1 mt-2">
+                        {item.bars.map((bar, idx) => (
+                          <div key={idx} className="flex gap-2">
+                            <span className="text-muted-foreground/60 w-5 text-right select-none">{idx + 1}</span>
+                            <span>{bar}</span>
+                          </div>
+                        ))}
+                      </div>
+                    )}
                   </div>
                 </Card>
               ))}
@@ -390,6 +443,24 @@ function ReferencesPage() {
           )}
         </TabsContent>
       </Tabs>
+
+      {/* Full Lyrics Modal Inspector */}
+      <Dialog open={!!viewLyricsModal} onOpenChange={(o) => !o && setViewLyricsModal(null)}>
+        <DialogContent className="max-w-2xl max-h-[85vh] overflow-y-auto">
+          <DialogHeader>
+            <DialogTitle className="font-display flex items-center gap-2">
+              <Music className="h-5 w-5 text-primary" />
+              {viewLyricsModal?.title}
+            </DialogTitle>
+            <DialogDescription>
+              Full extracted lyrics for inspection & analysis.
+            </DialogDescription>
+          </DialogHeader>
+          <div className="mt-4 p-4 rounded-md border bg-muted/30 font-mono text-xs leading-relaxed whitespace-pre-wrap max-h-[60vh] overflow-y-auto">
+            {viewLyricsModal?.lyrics}
+          </div>
+        </DialogContent>
+      </Dialog>
     </div>
   );
 }
