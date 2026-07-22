@@ -384,7 +384,7 @@ function LivePage() {
         {/* Real-time Oscilloscope Waveform & Metronome Arc */}
         <div className="grid grid-cols-1 md:grid-cols-4 gap-4 items-center p-4 rounded-xl border bg-background/50">
           <div className="md:col-span-3">
-            <AudioWaveform stream={liveCaptureRef.current?.stream ?? null} recording={running} height={100} />
+            <AudioWaveform stream={captureRef.current?.stream ?? null} recording={running} height={100} />
           </div>
           <div className="flex justify-center">
             <MetronomeRing bpm={bpm} active={running} beatsPerBar={beatsPerBar} size={110} />
