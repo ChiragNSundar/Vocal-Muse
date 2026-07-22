@@ -1,4 +1,4 @@
-import { createFileRoute, Link } from "@tanstack/react-router";
+import { createFileRoute, Link, useNavigate } from "@tanstack/react-router";
 import { useQuery } from "@tanstack/react-query";
 import { useServerFn } from "@tanstack/react-start";
 import { listTracks } from "@/lib/tracks.functions";
@@ -7,6 +7,7 @@ import { listTracks as listLocalTracks, isLocalOnly, getDeviceId as getLocalDevi
 import { Card } from "@/components/ui/card";
 import { Button } from "@/components/ui/button";
 import { Skeleton } from "@/components/ui/skeleton";
+import { EmptyState } from "@/components/EmptyState";
 import { Mic, Plus, Database } from "lucide-react";
 import { formatDistanceToNow } from "date-fns";
 
