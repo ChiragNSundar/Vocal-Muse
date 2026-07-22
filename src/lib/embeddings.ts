@@ -94,9 +94,16 @@ export async function embedMany(texts: string[], ctx?: EmbedContext): Promise<nu
     const BATCH = 32;
     for (let i = 0; i < missesText.length; i += BATCH) {
       const slice = missesText.slice(i, i + BATCH);
-      const vecs = context.backend === "local"
-        ? await callLocal(context, slice)
-        : await callCloud(slice, context.model);
+      let vecs: number[][];
+      if (context.backend === "local") {
+        try {
+          vecs = await callLocal(context, slice);
+        } catch {
+          vecs = await callCloud(slice, context.model);
+        }
+      } else {
+        vecs = await callCloud(slice, context.model);
+      }
       fresh.push(...vecs);
     }
     // Persist

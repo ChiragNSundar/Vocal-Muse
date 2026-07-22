@@ -156,9 +156,7 @@ function ConnectPage() {
             <CardHeader>
               <CardTitle>Active configuration</CardTitle>
               <CardDescription>
-                {config.mode === "local"
-                  ? <>Family <Badge variant="secondary">{detected.family}</Badge> · tier <Badge variant="secondary">{effectiveTier}</Badge> · ~{detected.paramsB || "?"}B · format <Badge variant="outline">{profile.writeFormat}</Badge></>
-                  : "Currently using cloud (Lovable AI). Wire up a local model to switch."}
+                Family <Badge variant="secondary">{detected.family}</Badge> · tier <Badge variant="secondary">{effectiveTier}</Badge> · ~{detected.paramsB || "?"}B · format <Badge variant="outline">{profile.writeFormat}</Badge>
               </CardDescription>
             </CardHeader>
             <CardContent className="grid gap-3">
@@ -181,10 +179,7 @@ function ConnectPage() {
                 </div>
               </div>
               <div className="flex gap-2 flex-wrap">
-                <Button onClick={() => updateConfig({ mode: config.mode === "local" ? "cloud" : "local" })} variant={config.mode === "local" ? "secondary" : "default"}>
-                  {config.mode === "local" ? "Switch to Cloud" : "Switch to Local"}
-                </Button>
-                <Button onClick={testLlm} disabled={testing === "llm"} variant="outline">
+                <Button onClick={testLlm} disabled={testing === "llm"}>
                   {testing === "llm" ? <Loader2 className="h-4 w-4 mr-2 animate-spin" /> : null}
                   Test connection
                 </Button>
@@ -206,7 +201,7 @@ function ConnectPage() {
           <Card>
             <CardHeader>
               <CardTitle>Detected transcription servers</CardTitle>
-              <CardDescription>Cloud transcription uses OpenAI via Lovable AI; local Whisper makes the whole pipeline offline.</CardDescription>
+              <CardDescription>Configure local Whisper server for offline voice-to-text.</CardDescription>
             </CardHeader>
             <CardContent className="space-y-3">
               {whispers.length === 0 && <div className="text-sm text-muted-foreground">Scanning…</div>}

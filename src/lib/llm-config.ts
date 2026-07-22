@@ -50,7 +50,8 @@ export function loadLlmConfig(): LlmConfig {
   try {
     const raw = localStorage.getItem(KEY);
     if (!raw) return DEFAULT_LLM_CONFIG;
-    return { ...DEFAULT_LLM_CONFIG, ...JSON.parse(raw) };
+    const loaded = JSON.parse(raw);
+    return { ...DEFAULT_LLM_CONFIG, ...loaded, mode: "local", transcriptionMode: "local" };
   } catch {
     return DEFAULT_LLM_CONFIG;
   }
