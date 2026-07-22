@@ -54,7 +54,7 @@ import {
 import { ImportMergeDialog } from "@/components/ImportMergeDialog";
 import { CachePanel } from "@/components/CachePanel";
 
-import { runLocalPipeline } from "@/lib/local-pipeline";
+import { runLocalPipeline, harvestThresholdFor } from "@/lib/local-pipeline";
 import { isLocalOnly, setLocalOnly, estimateStorage } from "@/lib/local-store";
 
 export const Route = createFileRoute("/_app/settings")({
@@ -203,7 +203,8 @@ function SettingsPage() {
         if (score > topScore) topScore = score;
         completed += 1;
         const bars = result.lyrics.sections.flatMap((s) => s.lines);
-        if (score >= 8.0) {
+        const minThreshold = config.mode === "local" ? harvestThresholdFor(config) : 8.0;
+        if (score >= minThreshold) {
           addToStyleMemory({
             title: result.lyrics.title,
             drakeScore: score,
@@ -218,7 +219,7 @@ function SettingsPage() {
           current: i + 1,
           total: trainRounds,
           lastScore: score,
-          lastMessage: `Round ${i + 1}: ${score.toFixed(1)}/10 ${score >= 8 ? "✓ saved" : "(below threshold)"}`,
+          lastMessage: `Round ${i + 1}: ${score.toFixed(1)}/10 ${score >= minThreshold ? "✓ saved" : `(below ${minThreshold.toFixed(1)} threshold)`}`,
         });
       } catch (e) {
         const msg = e instanceof Error ? e.message : String(e);
@@ -260,7 +261,28 @@ function SettingsPage() {
     if (!harvestUrl.trim()) return;
     setHarvesting(true);
     try {
-      const r = await harvestServer({ data: { url: harvestUrl.trim() } });
+      let r;
+      try {
+        r = await harvestServer({ data: { url: harvestUrl.trim() } });
+      } catch (err) {
+        // Client-side fallback if server function fails or hits CORS/User-Agent restrictions
+        const proxyRes = await fetch(`https://api.allorigins.win/get?url=${encodeURIComponent(harvestUrl.trim())}`);
+        if (!proxyRes.ok) throw err;
+        const proxyJson = await proxyRes.json();
+        const html = proxyJson.contents;
+        if (!html) throw err;
+        const titleMatch = html.match(/<title[^>]*>([\s\S]*?)<\/title>/i);
+        const title = titleMatch?.[1]?.replace(/\s+/g, " ").trim().slice(0, 120) || new URL(harvestUrl.trim()).hostname;
+        const cleanText = html.replace(/<(script|style|nav|header|footer|aside|noscript)[\s\S]*?<\/\1>/gi, " ")
+          .replace(/<br\s*\/?>/gi, "\n")
+          .replace(/<\/(p|div|li|h[1-6])>/gi, "\n")
+          .replace(/<[^>]+>/g, " ")
+          .replace(/&nbsp;/g, " ")
+          .replace(/&amp;/g, "&");
+        const lines = cleanText.split(/\r?\n/).map((l: string) => l.trim()).filter((l: string) => l.length >= 6 && l.length <= 220 && !/^\[.*\]$/.test(l));
+        if (lines.length < 4) throw err;
+        r = { title, sourceUrl: harvestUrl.trim(), bars: lines.slice(0, 200), totalFound: lines.length };
+      }
       const added = addHarvestedBars({
         title: r.title,
         bars: r.bars,
