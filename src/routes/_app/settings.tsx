@@ -28,6 +28,7 @@ import {
   Database,
   Zap,
 } from "lucide-react";
+import { searchWebLyrics, type WebLyricsResult } from "@/lib/lyrics-fetcher";
 import { toast } from "sonner";
 import { trainRound } from "@/lib/tracks.functions";
 import { harvestFromUrl } from "@/lib/harvest.functions";
@@ -120,11 +121,46 @@ function SettingsPage() {
   const [harvestUrl, setHarvestUrl] = useState("");
   const [harvestVibe, setHarvestVibe] = useState("");
   const [harvesting, setHarvesting] = useState(false);
+  const [webSearchQuery, setWebSearchQuery] = useState("");
+  const [webSearching, setWebSearching] = useState(false);
+  const [webSearchResults, setWebSearchResults] = useState<WebLyricsResult[]>([]);
   const [pasteTitle, setPasteTitle] = useState("");
   const [pasteVibe, setPasteVibe] = useState("");
   const [pasteText, setPasteText] = useState("");
   const importInputRef = useRef<HTMLInputElement>(null);
   const [importPlan, setImportPlan] = useState<ImportPlan | null>(null);
+
+  async function handleWebSearchHarvest() {
+    if (!webSearchQuery.trim()) return;
+    setWebSearching(true);
+    setWebSearchResults([]);
+    try {
+      const results = await searchWebLyrics(webSearchQuery);
+      if (!results.length) {
+        toast.error("No lyrics found");
+      } else {
+        setWebSearchResults(results);
+        toast.success(`Found ${results.length} tracks`);
+      }
+    } catch {
+      toast.error("Failed to search lyrics");
+    } finally {
+      setWebSearching(false);
+    }
+  }
+
+  function ingestWebSearchResult(res: WebLyricsResult) {
+    if (!res.lines.length) return;
+    addToStyleMemory({
+      title: `${res.artistName} — ${res.trackName}`,
+      drakeScore: 8.5,
+      vibe: harvestVibe.trim() || undefined,
+      bars: res.lines,
+      source: "web-search",
+    });
+    setMemory(loadStyleMemory());
+    toast.success(`Ingested ${res.lines.length} bars from "${res.trackName}" into style memory!`);
+  }
 
   useEffect(() => {
     setConfig(loadLlmConfig());
@@ -596,9 +632,43 @@ function SettingsPage() {
           ⚠ Respect copyright. Only ingest sources you have rights to. We don't crawl at scale.
         </p>
 
-        <div className="flex items-end gap-2 flex-wrap">
+        {/* 1-Click Song Lyrics Search */}
+        <div className="space-y-2 pt-2 border-t border-border">
+          <Label className="font-display">Search & Ingest Song Lyrics (1-Click)</Label>
+          <div className="flex gap-2">
+            <Input
+              placeholder="Search song title or artist (e.g. Kendrick Lamar - Euphoria)..."
+              value={webSearchQuery}
+              onChange={(e) => setWebSearchQuery(e.target.value)}
+              onKeyDown={(e) => e.key === "Enter" && handleWebSearchHarvest()}
+            />
+            <Button onClick={handleWebSearchHarvest} disabled={webSearching} variant="secondary">
+              {webSearching ? <Loader2 className="h-4 w-4 mr-2 animate-spin" /> : <Globe className="h-4 w-4 mr-2" />}
+              Search & Harvest
+            </Button>
+          </div>
+          {webSearchResults.length > 0 && (
+            <div className="grid gap-2 pt-2">
+              {webSearchResults.map((r) => (
+                <div key={r.id} className="flex items-center justify-between p-2.5 rounded border bg-background/50 text-xs font-mono">
+                  <div className="min-w-0 pr-2">
+                    <span className="font-semibold text-foreground font-sans">{r.trackName}</span>
+                    <span className="text-muted-foreground font-normal ml-1">by {r.artistName}</span>
+                    <span className="text-[10px] text-muted-foreground block font-mono">{r.lines.length} lines</span>
+                  </div>
+                  <Button size="sm" variant="outline" onClick={() => ingestWebSearchResult(r)}>
+                    <Sparkles className="h-3 w-3 mr-1 text-amber-400" />
+                    Ingest
+                  </Button>
+                </div>
+              ))}
+            </div>
+          )}
+        </div>
+
+        <div className="flex items-end gap-2 flex-wrap pt-2 border-t border-border">
           <div className="flex-1 min-w-[260px] space-y-2">
-            <Label htmlFor="harvest-url">Source URL</Label>
+            <Label htmlFor="harvest-url">Or Harvest from direct URL</Label>
             <Input
               id="harvest-url"
               value={harvestUrl}
