@@ -23,11 +23,12 @@ While cloud-based tools rely on remote APIs and subscription credits, **Vocal Mu
 
 ## ✨ Features
 
-- 🎙️ **Live Punch-In Studio**: Real-time voice capture with latency-compensated bar slicing and instant audio waveform preview.
+- 🎙️ **Live Punch-In Studio**: Real-time voice capture with latency-compensated bar slicing, Web Audio oscilloscope waveform, and metronome pulse ring.
 - 🧠 **Ghostwriter & Style Memory**: Multi-pass cadence matching, anti-cliché burned-phrase filter, and semantic embedding recall.
 - 🔒 **100% Offline & Private**: Zero API keys or cloud subscriptions required. Runs on local LLMs (**LM Studio**, **Ollama**) and local STT (**faster-whisper-server**).
 - 💾 **Local-First Storage**: Audio takes save to **OPFS** (Origin Private File System); tracks and style memories save to **IndexedDB**. Includes 1-click JSON bundle import/export.
 - 🎵 **Rhymes & Language Intelligence**: Offline CMUdict phonetic dictionary, keyless Datamuse API, and deep-linking into [RhymeWave](https://www.rhymewave.com/) for phonetic exploration.
+- ⌨️ **Keyboard Shortcuts & Sound FX**: Integrated shortcut system (`?` overlay) and synthesized Web Audio sound FX cues.
 - 🕸️ **Knowledge Graph Enabled**: Complete codebase AST indexed with [Graphify](https://github.com/sponsors/safishamsi) for interactive architectural exploration.
 
 ---
@@ -36,35 +37,35 @@ While cloud-based tools rely on remote APIs and subscription credits, **Vocal Mu
 
 Explore the core studios and modules of **Vocal Muse**:
 
-### 1. Track Library (`/library`)
-*The central dashboard for managing your tracks, lyrics, audio takes, and metadata.*
+### 1. Landing Page (`/`)
+*Gradient-backed hero section highlighting 100% local-first features and quickstart options.*
+
+![Landing Page](public/screenshots/landing_page.png)
+
+### 2. Onboarding Wizard (`/onboarding`)
+*3-step setup flow for auto-scanning local LLM/Whisper servers, trying demo recordings, and feature discovery.*
+
+![Onboarding Wizard](public/screenshots/onboarding.png)
+
+### 3. Track Library (`/library`)
+*The central dashboard featuring real-time search, status filter dropdowns, and sort options.*
 
 ![Track Library](public/screenshots/track_library.png)
 
-### 2. New Track Studio (`/new`)
-*Create new songs from mumble transcripts, live mic recordings, or uploaded audio files.*
+### 4. New Track Studio (`/new`)
+*Create new songs from mumble transcripts, live mic recordings, or uploaded audio files with vocal guidance tips.*
 
 ![New Track Studio](public/screenshots/new_track_studio.png)
 
-### 3. Live Punch-In Studio (`/live`)
-*Real-time vocal capture and bar-by-bar punch-in recording with visual syllable pocket indicators.*
+### 5. Live Punch-In Studio (`/live`)
+*Real-time vocal capture featuring live oscilloscope waveform visualizer, metronome ring, and bar pocket analysis.*
 
 ![Live Punch-In Studio](public/screenshots/live_punch_in.png)
 
-### 4. Reference & Style Intelligence (`/references`)
+### 6. Reference & Style Intelligence (`/references`)
 *1-click web lyric scraper to extract cadence blueprints (Cadence Fingerprints) and train your AI ghostwriter.*
 
 ![Reference & Style Intelligence](public/screenshots/reference_and_style.png)
-
-### 5. Connect Local AI (`/connect`)
-*Auto-scan localhost to wire up local LLM servers (LM Studio, Ollama) and Whisper STT servers.*
-
-![Connect Local AI](public/screenshots/connect_local_ai.png)
-
-### 6. Settings Dashboard (`/settings`)
-*Monitor local storage quotas (IndexedDB / OPFS), clear caches, and run synthetic self-play training benchmarks.*
-
-![Settings Dashboard](public/screenshots/settings_dashboard.png)
 
 ---
 
@@ -111,7 +112,7 @@ faster-whisper-server --model Systran/faster-whisper-base.en --port 9000
 
 ```
 Vocal Muse Architecture
-├── src/routes/             # TanStack Start file-based routing (_app/live, _app/references, etc.)
+├── src/routes/             # TanStack Start file-based routing (_app/live, _app/onboarding, etc.)
 ├── src/lib/local-pipeline  # Multi-pass cadence matching & ghostwriter refinement pipeline
 ├── src/lib/local-store     # IndexedDB (tracks, bars) & OPFS (audio takes) local persistence
 ├── src/lib/style-memory    # Few-shot vector recall & anti-cliché phrase burner
