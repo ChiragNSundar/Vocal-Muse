@@ -13,6 +13,7 @@ import { Route as AppRouteImport } from './routes/_app'
 import { Route as IndexRouteImport } from './routes/index'
 import { Route as AppSettingsRouteImport } from './routes/_app/settings'
 import { Route as AppReferencesRouteImport } from './routes/_app/references'
+import { Route as AppOnboardingRouteImport } from './routes/_app/onboarding'
 import { Route as AppNewRouteImport } from './routes/_app/new'
 import { Route as AppLiveRouteImport } from './routes/_app/live'
 import { Route as AppLibraryRouteImport } from './routes/_app/library'
@@ -36,6 +37,11 @@ const AppSettingsRoute = AppSettingsRouteImport.update({
 const AppReferencesRoute = AppReferencesRouteImport.update({
   id: '/references',
   path: '/references',
+  getParentRoute: () => AppRoute,
+} as any)
+const AppOnboardingRoute = AppOnboardingRouteImport.update({
+  id: '/onboarding',
+  path: '/onboarding',
   getParentRoute: () => AppRoute,
 } as any)
 const AppNewRoute = AppNewRouteImport.update({
@@ -70,6 +76,7 @@ export interface FileRoutesByFullPath {
   '/library': typeof AppLibraryRoute
   '/live': typeof AppLiveRoute
   '/new': typeof AppNewRoute
+  '/onboarding': typeof AppOnboardingRoute
   '/references': typeof AppReferencesRoute
   '/settings': typeof AppSettingsRoute
   '/track/$id': typeof AppTrackIdRoute
@@ -80,6 +87,7 @@ export interface FileRoutesByTo {
   '/library': typeof AppLibraryRoute
   '/live': typeof AppLiveRoute
   '/new': typeof AppNewRoute
+  '/onboarding': typeof AppOnboardingRoute
   '/references': typeof AppReferencesRoute
   '/settings': typeof AppSettingsRoute
   '/track/$id': typeof AppTrackIdRoute
@@ -92,6 +100,7 @@ export interface FileRoutesById {
   '/_app/library': typeof AppLibraryRoute
   '/_app/live': typeof AppLiveRoute
   '/_app/new': typeof AppNewRoute
+  '/_app/onboarding': typeof AppOnboardingRoute
   '/_app/references': typeof AppReferencesRoute
   '/_app/settings': typeof AppSettingsRoute
   '/_app/track/$id': typeof AppTrackIdRoute
@@ -104,6 +113,7 @@ export interface FileRouteTypes {
     | '/library'
     | '/live'
     | '/new'
+    | '/onboarding'
     | '/references'
     | '/settings'
     | '/track/$id'
@@ -114,6 +124,7 @@ export interface FileRouteTypes {
     | '/library'
     | '/live'
     | '/new'
+    | '/onboarding'
     | '/references'
     | '/settings'
     | '/track/$id'
@@ -125,6 +136,7 @@ export interface FileRouteTypes {
     | '/_app/library'
     | '/_app/live'
     | '/_app/new'
+    | '/_app/onboarding'
     | '/_app/references'
     | '/_app/settings'
     | '/_app/track/$id'
@@ -163,6 +175,13 @@ declare module '@tanstack/react-router' {
       path: '/references'
       fullPath: '/references'
       preLoaderRoute: typeof AppReferencesRouteImport
+      parentRoute: typeof AppRoute
+    }
+    '/_app/onboarding': {
+      id: '/_app/onboarding'
+      path: '/onboarding'
+      fullPath: '/onboarding'
+      preLoaderRoute: typeof AppOnboardingRouteImport
       parentRoute: typeof AppRoute
     }
     '/_app/new': {
@@ -208,6 +227,7 @@ interface AppRouteChildren {
   AppLibraryRoute: typeof AppLibraryRoute
   AppLiveRoute: typeof AppLiveRoute
   AppNewRoute: typeof AppNewRoute
+  AppOnboardingRoute: typeof AppOnboardingRoute
   AppReferencesRoute: typeof AppReferencesRoute
   AppSettingsRoute: typeof AppSettingsRoute
   AppTrackIdRoute: typeof AppTrackIdRoute
@@ -218,6 +238,7 @@ const AppRouteChildren: AppRouteChildren = {
   AppLibraryRoute: AppLibraryRoute,
   AppLiveRoute: AppLiveRoute,
   AppNewRoute: AppNewRoute,
+  AppOnboardingRoute: AppOnboardingRoute,
   AppReferencesRoute: AppReferencesRoute,
   AppSettingsRoute: AppSettingsRoute,
   AppTrackIdRoute: AppTrackIdRoute,
