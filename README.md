@@ -38,39 +38,33 @@ Explore the core studios and modules of **Vocal Muse**:
 
 ### 1. Track Library (`/library`)
 *The central dashboard for managing your tracks, lyrics, audio takes, and metadata.*
-<p align="center">
-  <img src="./docs/screenshots/track_library.png" width="100%" alt="Track Library" />
-</p>
+
+![Track Library](docs/screenshots/track_library.png)
 
 ### 2. New Track Studio (`/new`)
 *Create new songs from mumble transcripts, live mic recordings, or uploaded audio files.*
-<p align="center">
-  <img src="./docs/screenshots/new_track_studio.png" width="100%" alt="New Track Studio" />
-</p>
+
+![New Track Studio](docs/screenshots/new_track_studio.png)
 
 ### 3. Live Punch-In Studio (`/live`)
 *Real-time vocal capture and bar-by-bar punch-in recording with visual syllable pocket indicators.*
-<p align="center">
-  <img src="./docs/screenshots/live_punch_in.png" width="100%" alt="Live Punch-In Studio" />
-</p>
+
+![Live Punch-In Studio](docs/screenshots/live_punch_in.png)
 
 ### 4. Reference & Style Intelligence (`/references`)
 *1-click web lyric scraper to extract cadence blueprints (Cadence Fingerprints) and train your AI ghostwriter.*
-<p align="center">
-  <img src="./docs/screenshots/reference_and_style.png" width="100%" alt="Reference & Style Intelligence" />
-</p>
+
+![Reference & Style Intelligence](docs/screenshots/reference_and_style.png)
 
 ### 5. Connect Local AI (`/connect`)
 *Auto-scan localhost to wire up local LLM servers (LM Studio, Ollama) and Whisper STT servers.*
-<p align="center">
-  <img src="./docs/screenshots/connect_local_ai.png" width="100%" alt="Connect Local AI" />
-</p>
+
+![Connect Local AI](docs/screenshots/connect_local_ai.png)
 
 ### 6. Settings Dashboard (`/settings`)
 *Monitor local storage quotas (IndexedDB / OPFS), clear caches, and run synthetic self-play training benchmarks.*
-<p align="center">
-  <img src="./docs/screenshots/settings_dashboard.png" width="100%" alt="Settings Dashboard" />
-</p>
+
+![Settings Dashboard](docs/screenshots/settings_dashboard.png)
 
 ---
 
